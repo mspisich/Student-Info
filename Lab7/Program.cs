@@ -10,89 +10,139 @@ namespace Lab7
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to our C# class!");
+            Console.WriteLine("Welcome to our C# class! (Note: info on students' hometowns and favorite foods is completely made up!)");
             bool run = true;
             while (run)
             {
-                string[] names = new string[] { "Mike", "Othelle", "Derek", "Mark", "Bruce", "Chuck", "Tallon", "Pete", "Allison", "Josh" };
-                string[] hometowns = new string[] { "New Baltimore", "Grand Rapids", "Lansing", "Muskegon", "Kalamazoo", "Detroit", "Battle Creek", "Ann Arbor", "Saginaw", "Grayling" };
-                string[] favFoods = new string[] { "pizza", "bagels", "porkchops", "ice cream", "salad", "beans", "soup", "chili", "burritos", "tacos" };
+                List<string> names = new List<string> ();
 
-                Console.WriteLine("\nWhat would you like to know about the class? (names/hometowns/favorite foods):");
-
-                string userInput = GetInput();
-
-                switch (userInput)
-                {
-                    case "names":
-                        PrintNames(names);
-                        break;
-
-                    case "hometowns":
-                        PrintHometowns(names, hometowns);
-                        break;
-
-                    case "favorite foods":
-                        PrintFavFoods(names, favFoods);
-                        break;
-
-                    default:
-                        Console.WriteLine("Invalid!");
-                        break;
-                }
+                names.Add("Mike");
+                names.Add("Othelle");
+                names.Add("Derek");
+                names.Add("Mark");
+                names.Add("Bruce");
+                names.Add("Chuck");
+                names.Add("Tallon");
+                names.Add("Pete");
+                names.Add("Allison");
+                names.Add("Josh");
                 
+                List<string> hometowns = new List<string>();
+
+                hometowns.Add("New Baltimore");
+                hometowns.Add("Grand Rapids");
+                hometowns.Add("Lansing");
+                hometowns.Add("Muskegon");
+                hometowns.Add("Kalamazoo");
+                hometowns.Add("Detroit");
+                hometowns.Add("Battle Creek");
+                hometowns.Add("Ann Arbor");
+                hometowns.Add("Saginaw");
+                hometowns.Add("Grayling");
+
+                List<string> favFoods = new List<string>();
+
+                favFoods.Add("pizza");
+                favFoods.Add("bagels");
+                favFoods.Add("porkchops");
+                favFoods.Add("ice cream");
+                favFoods.Add("salad");
+                favFoods.Add("beans");
+                favFoods.Add("soup");
+                favFoods.Add("chili");
+                favFoods.Add("burritos");
+                favFoods.Add("tacos");
+                
+                Console.WriteLine("\nWhich student would you like to know about? Please type a number between 1 and " + names.Count + ", or type 0 for a list of students:");
+
+                int studentChoice = GetStudentChoice(names);
+
+                Console.WriteLine("Student " + studentChoice + " is " + names[studentChoice - 1] + ". What would you like to know about them? (hometown/favorite food):");
+  
+                //Run while user is curious to learn more
+                bool learnMore = true;
+                while (learnMore)
+                {
+                    string infoChoice = GetInfoChoice();
+                    switch (infoChoice)
+                    {
+                        case "hometown":
+                            Console.WriteLine(names[studentChoice - 1] + " is from " + hometowns[studentChoice - 1] + ".");
+                            break;
+                        case "favorite food":
+                            Console.WriteLine(names[studentChoice - 1] + " likes to eat " + favFoods[studentChoice - 1] + ".");
+                            break;
+                        default:
+                            Console.WriteLine("Something went wrong... Please try again.");
+                            break;
+                    }
+                    Console.WriteLine("Would you like to learn more about " + names[studentChoice - 1] + "? (y/n)");
+                    learnMore = Continue();
+                    if(learnMore == true)
+                    {
+                        Console.WriteLine("What else would you like to know about " + names[studentChoice - 1] + "? (hometown/favorite food)");
+                    }
+                }
+
+
+
+
                 Console.WriteLine("\nGo again? (y/n):");
                 run = Continue();
             }
         }
 
-        //Get input and check if it's valid
-        public static string GetInput()
+        //Get input and check if it's a student that exists
+        public static int GetStudentChoice(List<string> names)
         {
-            string input = Console.ReadLine().ToLower();
-            if (!input.Equals("names") && !input.Equals("hometowns") && !input.Equals("favorite foods"))
+            int input = int.Parse(Console.ReadLine());
+            if (input < 0 || input > names.Count)
             {
-                Console.WriteLine("Invalid! Please type names/hometowns/favorite foods:");
-                input = GetInput();
+                Console.WriteLine("That student doesn't exist! Please type a number between 1 and " + names.Count + ", or type 0 for a list of names:");
+                input = GetStudentChoice(names);
+            }
+            else if(input == 0)
+            {
+                PrintNames(names);
+                Console.WriteLine("\nWhich student would you like to know about? Please type a number between 1 and " + names.Count + ", or type 0 for a list of students:");
+                input = GetStudentChoice(names);
             }
 
             return input;  
         }
 
-        public static void PrintNames(string[] names)
+        public static void PrintNames(List<string> names)
         {
             Console.WriteLine("\nStudents in the class:");
             Console.WriteLine("======================\n");
 
+            int studentIndex = 0;
+
             //Print out each person's name
-            for (int i = 0; i < names.Length; i++)
+            foreach (string name in names)
             {
-                Console.WriteLine(names[i]);
+                studentIndex++;
+                Console.WriteLine(studentIndex + ": " + name);
             }
         }
 
-        public static void PrintHometowns(string[] names, string[] hometowns)
+        public static string GetInfoChoice()
         {
-            Console.WriteLine("\nStudents' hometowns:");
-            Console.WriteLine("====================\n");
+            string infoChoice = Console.ReadLine().ToLower();
 
-            //Print out each person's name and hometown
-            for (int i = 0; i < names.Length; i++)
+            //Validate input
+            while (!infoChoice.Equals("hometown") && !infoChoice.Equals("favorite food"))
             {
-                Console.WriteLine(names[i] + " is from " + hometowns[i] + ".");
+                Console.WriteLine("Please type hometown/favorite food:");
+                infoChoice = Console.ReadLine().ToLower();
             }
+
+            return infoChoice;
         }
 
-        public static void PrintFavFoods(string[] names, string[] favFoods)
+        public static void PrintHometown (int studentChoice, List<string> names, List<string> hometowns)
         {
-            Console.WriteLine("\nStudents' favorite foods:");
-            Console.WriteLine("=========================\n");
-
-            //Print out each person's name and favorite food
-            for (int i = 0; i < names.Length; i++)
-            {
-                Console.WriteLine(names[i] + " likes to eat " + favFoods[i] + ".");
-            }
+            Console.WriteLine(names[studentChoice - 1] + " is from " + hometowns[studentChoice] + ".");
         }
 
         //Continue program?
@@ -103,7 +153,6 @@ namespace Lab7
 
             if (input.Equals("n"))
             {
-                Console.WriteLine("Bye!");
                 run = false;
             }
             else if (input.Equals("y"))
